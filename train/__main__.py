@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 from tensorflow.keras.optimizers import RMSprop
 from tensorflow.io import read_file, decode_jpeg
@@ -15,6 +16,7 @@ from train import (
     ALPHA,
     EPOCHS,
     CHAR_COUNT,
+    DATA_PATH,
 )
 
 def processimg(filepath: str):
@@ -24,12 +26,18 @@ def processimg(filepath: str):
     image = transpose(image)
     return per_image_standardization(image)
 
-def createds(ds) -> Dataset:
-    ds = Dataset.from_tensor_slices(tuple(ds))
+def createds(datapath: Path) -> Dataset:
+    with open(datapath / "dataset.json") as f:
+        ds = json.load(f)
+    ds = [ds[0][:100], ds[1][:100]]
+    paths = [str(datapath / x) for x in ds[0]]
+    ds = Dataset.from_tensor_slices((paths, ds[1]))
     ds = ds.map(lambda x, y: (processimg(x), y))
     return ds.batch(BATCH_SIZE)
 
 if __name__ == "__main__":
+
+    # create model
     model = createModel(CHAR_COUNT)
     model.compile(
         optimizer=RMSprop(learning_rate=ALPHA),
@@ -37,20 +45,13 @@ if __name__ == "__main__":
     )
     model.summary()
 
-    with open("dataset.json") as f:
-        ds = json.load(f)
-    print(f"samples count: {len(ds[0])}")
+    # create dataset
+    datapath = Path.cwd() / DATA_PATH
+    ds = createds(datapath)
 
-    tds = [ds[0][:1000], ds[1][:1000]]
-    print(f"train samples count: {len(tds[0])}")
-    tds = createds(tds)
-
-    vds = [ds[0][-1000:], ds[1][-1000:]]
-    print(f"validate samples count: {len(vds[0])}")
-    vds = createds(vds)
-
+    # train model
     model.fit(
-        x=tds,
+        x=ds,
         epochs=EPOCHS,
-        validation_data=vds
+        # validation_data=vds
     )
