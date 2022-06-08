@@ -1,5 +1,7 @@
 /env
 /data
 
+sampleds.py
 dataset.json
+
 *.pyc

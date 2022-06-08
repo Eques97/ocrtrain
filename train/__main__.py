@@ -29,7 +29,7 @@ def processimg(filepath: str):
 def createds(datapath: Path) -> Dataset:
     with open(datapath / "dataset.json") as f:
         ds = json.load(f)
-    ds = [ds[0][:100], ds[1][:100]]
+    # ds = [ds[0][:100], ds[1][:100]]
     paths = [str(datapath / x) for x in ds[0]]
     ds = Dataset.from_tensor_slices((paths, ds[1]))
     ds = ds.map(lambda x, y: (processimg(x), y))
