@@ -1,5 +1,7 @@
 /env
 /data
+/ckpt
+/minidata
 
 sampleds.py
 
