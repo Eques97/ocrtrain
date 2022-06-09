@@ -10,8 +10,9 @@ from tensorflow.keras.layers import (
         LSTM,
         Softmax,
     )
+from train import CHAR_COUNT
 
-def createModel(charcount: int, decode: bool=False) -> Sequential:
+def createModel(decode: bool=False) -> Sequential:
     kernel_initializer = TruncatedNormal(stddev=0.1)
     model = Sequential(
         [
@@ -96,7 +97,7 @@ def createModel(charcount: int, decode: bool=False) -> Sequential:
             # atorus convolution layer
             Conv2D(
                 name="09-1",
-                filters=charcount,
+                filters=CHAR_COUNT,
                 kernel_size=1,
                 dilation_rate=1,
                 padding="same",
@@ -104,7 +105,7 @@ def createModel(charcount: int, decode: bool=False) -> Sequential:
             ),
 
             # squeeze layer
-            Reshape(name="10-1", target_shape=(-1, charcount)),
+            Reshape(name="10-1", target_shape=(-1, CHAR_COUNT)),
 
             # softmax layer
             Softmax(name="11-1")
