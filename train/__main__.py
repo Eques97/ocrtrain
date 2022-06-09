@@ -1,3 +1,5 @@
+import json
+
 from tensorflow.keras.optimizers import RMSprop
 from tensorflow.keras.callbacks import ModelCheckpoint
 
@@ -16,6 +18,7 @@ if __name__ == "__main__":
     model.compile(
         optimizer=RMSprop(learning_rate=ALPHA),
         loss=ctcloss,
+        metrics=None,
     )
     model.summary()
 
@@ -32,9 +35,12 @@ if __name__ == "__main__":
     ]
 
     # train model
-    model.fit(
+    history = model.fit(
         x=ds,
         epochs=EPOCHS,
         callbacks=callbacks,
         validation_data=None,
     )
+
+    with open("history.json", mode="w") as f:
+        json.dump(history.history, f, indent = 4)
