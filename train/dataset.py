@@ -16,6 +16,8 @@ from train import (
 
 def extract() -> Path:
     datapath = Path.cwd() / DATA_FILE
+    if datapath.exists():
+        return datapath
     tardir = str(datapath) + ".tar.xz"
     with tarfile.open(tardir) as f:
         f.extractall(Path.cwd())
