@@ -38,7 +38,7 @@ if __name__ == "__main__":
     history = model.fit(
         x=ds,
         epochs=EPOCHS,
-        # callbacks=callbacks,
+        callbacks=callbacks,
         validation_data=None,
     )
 
