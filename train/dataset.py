@@ -36,7 +36,8 @@ def createds() -> Dataset:
         ds = json.load(f)
     dsize = len(ds[0])
     cutidx = dsize % BATCH_SIZE
-    ds = [ds[0][:-cutidx], ds[1][:-cutidx]]
+    if cutidx > 0:
+        ds = [ds[0][:-cutidx], ds[1][:-cutidx]]
     paths = [str(datapath / x) for x in ds[0]]
     ds = Dataset.from_tensor_slices((paths, ds[1]))
     ds = ds.map(lambda x, y: (processimg(x), y))
