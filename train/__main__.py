@@ -23,11 +23,14 @@ if __name__ == "__main__":
     model.summary()
 
     # create dataset
-    ds = createds()
+    tds = createds()
+    vds = createds(isval=True)
 
     # create callbacks
     ckptcb = ModelCheckpoint(
-        filepath="ckpt/{epoch:02d}-{loss:.2f}",
+        filepath="ckpt/{epoch:03d}",
+        monitor="val_loss",
+        save_best_only=False,
         save_weights_only=True,
     )
     callbacks = [
@@ -36,10 +39,10 @@ if __name__ == "__main__":
 
     # train model
     history = model.fit(
-        x=ds,
+        x=tds,
         epochs=EPOCHS,
         callbacks=callbacks,
-        validation_data=None,
+        validation_data=vds,
     )
 
     with open("history.json", mode="w") as f:

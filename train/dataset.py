@@ -30,9 +30,10 @@ def processimg(filepath: str):
     image = transpose(image)
     return per_image_standardization(image)
 
-def createds() -> Dataset:
+def createds(isval=False) -> Dataset:
     datapath = extract()
-    with open(datapath / "dataset.json") as f:
+    filename = "datasetv.json" if isval else "dataset.json"
+    with open(datapath / filename) as f:
         ds = json.load(f)
     dsize = len(ds[0])
     cutidx = dsize % BATCH_SIZE
