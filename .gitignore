@@ -3,9 +3,6 @@
 /ckpt
 /minidata
 
-sampleds.py
-check.py
-
 *.h5
 *.json
 *.pyc
