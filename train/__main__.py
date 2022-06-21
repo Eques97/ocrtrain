@@ -3,9 +3,10 @@ import json
 from tensorflow.keras.optimizers import RMSprop
 from tensorflow.keras.callbacks import ModelCheckpoint
 
-from train.model import createModel
+from train.model import createmodel
 from train.cost import ctcloss
 from train.dataset import createds
+from train.metrics import characc
 from train import (
     ALPHA,
     EPOCHS,
@@ -14,11 +15,13 @@ from train import (
 if __name__ == "__main__":
 
     # create model
-    model = createModel()
+    model = createmodel()
     model.compile(
         optimizer=RMSprop(learning_rate=ALPHA),
         loss=ctcloss,
-        metrics=None,
+        metrics=[
+            characc,
+        ],
     )
     model.summary()
 
