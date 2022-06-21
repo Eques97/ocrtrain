@@ -10,9 +10,11 @@ from tensorflow.keras.layers import (
         LSTM,
         Softmax,
     )
+
+from train.layers import CTCdecode
 from train import CHAR_COUNT
 
-def createModel(decode: bool=False) -> Sequential:
+def createmodel(decode: bool=False) -> Sequential:
     kernel_initializer = TruncatedNormal(stddev=0.1)
     model = Sequential(
         [
@@ -108,8 +110,11 @@ def createModel(decode: bool=False) -> Sequential:
             Reshape(name="10-1", target_shape=(-1, CHAR_COUNT)),
 
             # softmax layer
-            Softmax(name="11-1")
+            Softmax(name="11-1"),
         ],
         name="OCR"
     )
+    if decode:
+        model.add(CTCdecode(name="12-1"))
+
     return model
