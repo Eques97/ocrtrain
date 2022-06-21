@@ -2,6 +2,7 @@ from pathlib import Path
 import tarfile
 import json
 
+from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.io import read_file, decode_jpeg
 from tensorflow.image import resize_with_pad, transpose, per_image_standardization
 from tensorflow.data import Dataset
@@ -11,6 +12,8 @@ from train import (
     IMAGE_WIDTH,
     IMAGE_HEIGHT,
     COLOR_CHANNEL,
+    FRAME_SIZE,
+    CHAR_COUNT,
     DATA_FILE,
 )
 
@@ -40,6 +43,15 @@ def createds(isval=False) -> Dataset:
     if cutidx > 0:
         ds = [ds[0][:-cutidx], ds[1][:-cutidx]]
     paths = [str(datapath / x) for x in ds[0]]
-    ds = Dataset.from_tensor_slices((paths, ds[1]))
+    labels = ds[1]
+    padded = pad_sequences(
+        sequences=labels,
+        maxlen=FRAME_SIZE,
+        dtype=int,
+        padding="post",
+        truncating="post",
+        value=CHAR_COUNT - 1,
+    )
+    ds = Dataset.from_tensor_slices((paths, padded))
     ds = ds.map(lambda x, y: (processimg(x), y))
     return ds.batch(BATCH_SIZE)
