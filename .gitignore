@@ -1,12 +1,9 @@
 /env
-/data
 /ckpt
-/minidata
+/.temp
+/*data
 
 *.h5
 *.json
 *.pyc
 *.tar.xz
-
-gitpat.txt
-note.txt
